@@ -2,17 +2,17 @@
     <g>
         <g class="typst-group">
             <g>
-                <path class="typst-shape" fill="#000000" fill-rule="nonzero" d="M 0 0m 0 15.1 c 0 -8.3395 6.7605004 -15.1 15.1 -15.1 h 1042.8 c 8.339478 0 15.099976 6.7605004 15.099976 15.1 v 120.799995 c 0 8.339508 -6.760498 15.100006 -15.099976 15.100006 h -1042.8 c -8.3395 0 -15.1 -6.760498 -15.1 -15.100006 Z "/>
+                <path class="typst-shape" fill="#11111b" fill-rule="nonzero" d="M 0 0m 0 15.1 c 0 -8.3395 6.7605004 -15.1 15.1 -15.1 h 1042.8 c 8.339478 0 15.099976 6.7605004 15.099976 15.1 v 120.799995 c 0 8.339508 -6.760498 15.100006 -15.099976 15.100006 h -1042.8 c -8.3395 0 -15.1 -6.760498 -15.1 -15.100006 Z "/>
                 <g class="typst-text" transform="matrix(1 0 0 -1 400.1363636363636 111.86363636363636)">
-                    <use xlink:href="#g4EAD910DF860B14B3EEB5FA4B1AB913" x="0" y="0" fill="#ffffff" fill-rule="nonzero"/>
-                    <use xlink:href="#gDBCF26C842DB5C508136544563397519" x="54.54545454545455" y="0" fill="#ffffff" fill-rule="nonzero"/>
-                    <use xlink:href="#g6D73C2E3EC55B0170EAA27953C8134DD" x="109.0909090909091" y="0" fill="#ffffff" fill-rule="nonzero"/>
+                    <use xlink:href="#g4EAD910DF860B14B3EEB5FA4B1AB913" x="0" y="0" fill="#dce0e8" fill-rule="nonzero"/>
+                    <use xlink:href="#gDBCF26C842DB5C508136544563397519" x="54.54545454545455" y="0" fill="#dce0e8" fill-rule="nonzero"/>
+                    <use xlink:href="#g6D73C2E3EC55B0170EAA27953C8134DD" x="109.0909090909091" y="0" fill="#dce0e8" fill-rule="nonzero"/>
                 </g>
                 <g class="typst-text" transform="matrix(1 0 0 -1 563.7727272727273 111.86363636363636)">
-                    <use xlink:href="#g443A318D9184F559A2E2876770778CA8" x="0" y="0" fill="#ffffff" fill-rule="nonzero"/>
+                    <use xlink:href="#g443A318D9184F559A2E2876770778CA8" x="0" y="0" fill="#d20f39" fill-rule="nonzero"/>
                 </g>
                 <g class="typst-text" transform="matrix(1 0 0 -1 618.3181818181818 111.86363636363636)">
-                    <use xlink:href="#g5FD3CDC79003B3E9A98E499C64E59363" x="0" y="0" fill="#ffffff" fill-rule="nonzero"/>
+                    <use xlink:href="#g5FD3CDC79003B3E9A98E499C64E59363" x="0" y="0" fill="#dce0e8" fill-rule="nonzero"/>
                 </g>
             </g>
         </g>
