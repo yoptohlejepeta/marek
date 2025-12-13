@@ -1,13 +1,16 @@
+local Sidebar = require("src.ui.sidebar")
+local Color = require("src.ui.colors")
+
+love.window.maximize()
+
 function love.load()
-	X, Y, W, H = 20, 20, 60, 20
+	local font = love.graphics.newFont(16)
+	love.graphics.setFont(font)
+	love.graphics.setBackgroundColor(Color.BASE)
 end
 
-function love.update(dt)
-	W = W + 1
-	H = H + 1
-end
+function love.update(dt) end
 
 function love.draw()
-	love.graphics.setColor(0, 0.4, 0.4)
-	love.graphics.rectangle("fill", X, Y, W, H)
+	Sidebar:draw()
 end
