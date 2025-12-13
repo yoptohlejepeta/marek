@@ -3,18 +3,16 @@ local Color = require("src.ui.colors")
 ---@class Button
 ---@field x number x coordinate
 ---@field y number y coordinate
+---@field width number width of button
+---@field height number height of button
 ---@field text string? text of button
 ---@field image love.Image? image
-local Button = {
-	x = 0,
-	y = 0,
-	text = nil,
-	image = nil,
-}
+---@field action_f function
+---@field was_pressed boolean
+local Button = { was_pressed = false }
 
 function Button:new(opts)
 	opts = opts or {}
-	-- opts.content = love.graphics.newText(love.graphics.getFont(), "Button")
 
 	setmetatable(opts, self)
 	self.__index = self
@@ -26,12 +24,37 @@ function Button:draw()
 	love.graphics.setColor(Color.BLUE)
 
 	local margin = 15
-	local content = love.graphics.newText(love.graphics.getFont(), self.text) or self.image
-	local c_width, c_height = content:getWidth(), content:getHeight()
+	local content = love.graphics.newTextBatch(love.graphics.getFont(), self.text) or self.image
 
-	love.graphics.rectangle("fill", self.x, self.y, c_width + margin, c_height + margin, 10, 10)
-	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.draw(content, self.x + margin / 2, self.y + margin / 2)
+	if content then
+		local c_width, c_height = content:getWidth(), content:getHeight()
+		self.width = c_width + margin
+		self.height = c_height + margin
+
+		love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 10, 10)
+		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.draw(content, self.x + margin / 2, self.y + margin / 2)
+	end
 end
 
+function Button:update()
+	local mx, my = love.mouse.getPosition()
+	local hovered = mx >= self.x and mx <= self.x + self.width and my >= self.y and my <= self.y + self.height
+
+	if hovered and love.mouse.isDown(1) and not self.was_pressed then
+		self.was_pressed = true
+		self.action_f()
+	elseif not love.mouse.isDown(1) then
+		self.was_pressed = false
+	end
+
+	self.is_hovered = hovered
+end
+
+-- function Button:action()
+-- 	if love.mouse.isDown(1) and self.is_hovered then
+-- 		self.action_f()
+-- 	end
+-- end
+--
 return Button

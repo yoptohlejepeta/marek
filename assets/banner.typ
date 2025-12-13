@@ -4,6 +4,6 @@
 
 
 #let RED = rgb(210, 15, 57)
-#let BG = rgb(17, 17, 27)
+#let BG = rgb(30, 30, 46)
 
 #box(fill: BG, width: 100%, height: 100%, radius: 10%, [MAR#text(fill: RED)[_e_]K])
