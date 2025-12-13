@@ -1,5 +1,5 @@
 
-![logo](docs/logo.svg) 
+![logo](assets/logo.svg) 
 
 
 ```bash
