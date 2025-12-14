@@ -10,7 +10,7 @@ function Sidebar:new()
 	local obj = setmetatable({}, self)
 	self.__index = self
 	obj.elements = {}
-	table.insert(obj.elements, Button:new({ x = 20, y = 20, text = "Button", action_f = FileUtils.openFiles) }))
+	table.insert(obj.elements, Button:new({ x = 20, y = 20, text = "Button", action_f = FileUtils.openFiles }))
 	return obj
 end
 
