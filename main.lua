@@ -4,7 +4,7 @@ local Button = require("src.ui.button")
 local Color = require("src.ui.colors")
 
 function love.load()
-  love.window.maximize()
+  -- love.window.maximize()
   local font = love.graphics.newFont(16)
   love.graphics.setFont(font)
   love.graphics.setBackgroundColor(Color.BASE)

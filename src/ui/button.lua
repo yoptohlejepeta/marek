@@ -13,46 +13,48 @@ local Color = require("src.ui.colors")
 local Button = { was_pressed = false }
 
 function Button:new(opts)
-	opts = opts or {}
-	opts.width = opts.width or 0
-	opts.height = opts.height or 0
+  opts = opts or {}
+  opts.width = opts.width or 0
+  opts.height = opts.height or 0
 
-	setmetatable(opts, self)
-	self.__index = self
-	return opts
+  setmetatable(opts, self)
+  self.__index = self
+  return opts
 end
 
 --- Draw button
 function Button:draw()
-	love.graphics.setColor(Color.BLUE)
+  local r, g, b = unpack(Color.BLUE)
+  local a = self.is_hovered and 0.7 or 1
+  love.graphics.setColor(r, g, b, a)
 
-	local margin = 15
-	local content = love.graphics.newTextBatch(love.graphics.getFont(), self.text) or self.image
+  local margin = 15
+  local content = love.graphics.newTextBatch(love.graphics.getFont(), self.text) or self.image
 
-	if content then
-		local c_width, c_height = content:getWidth(), content:getHeight()
-		self.width = c_width + margin
-		self.height = c_height + margin
+  if content then
+    local c_width, c_height = content:getWidth(), content:getHeight()
+    self.width = c_width + margin
+    self.height = c_height + margin
 
-		love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 10, 10)
-		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.draw(content, self.x + margin / 2, self.y + margin / 2)
-	end
+    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(content, self.x + margin / 2, self.y + margin / 2)
+  end
 end
 
 --- Update button. Used for hovered effect.
 function Button:update()
-	local mx, my = love.mouse.getPosition()
-	local hovered = mx >= self.x and mx <= self.x + self.width and my >= self.y and my <= self.y + self.height
+  local mx, my = love.mouse.getPosition()
+  local hovered = mx >= self.x and mx <= self.x + self.width and my >= self.y and my <= self.y + self.height
 
-	if hovered and love.mouse.isDown(1) and not self.was_pressed then
-		self.was_pressed = true
-		self.action_f()
-	elseif not love.mouse.isDown(1) then
-		self.was_pressed = false
-	end
+  if hovered and love.mouse.isDown(1) and not self.was_pressed then
+    self.was_pressed = true
+    self.action_f()
+  elseif not love.mouse.isDown(1) then
+    self.was_pressed = false
+  end
 
-	self.is_hovered = hovered
+  self.is_hovered = hovered
 end
 
 -- function Button:action()
