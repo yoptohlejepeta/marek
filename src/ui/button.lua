@@ -9,10 +9,13 @@ local Color = require("src.ui.colors")
 ---@field image love.Image? image
 ---@field action_f function
 ---@field was_pressed boolean
+---@field is_hovered boolean
 local Button = { was_pressed = false }
 
 function Button:new(opts)
 	opts = opts or {}
+	opts.width = opts.width or 0
+	opts.height = opts.height or 0
 
 	setmetatable(opts, self)
 	self.__index = self
@@ -37,6 +40,7 @@ function Button:draw()
 	end
 end
 
+--- Update button. Used for hovered effect.
 function Button:update()
 	local mx, my = love.mouse.getPosition()
 	local hovered = mx >= self.x and mx <= self.x + self.width and my >= self.y and my <= self.y + self.height
