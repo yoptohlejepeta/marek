@@ -57,10 +57,5 @@ function Button:update()
   self.is_hovered = hovered
 end
 
--- function Button:action()
--- 	if love.mouse.isDown(1) and self.is_hovered then
--- 		self.action_f()
--- 	end
--- end
---
 return Button
+
