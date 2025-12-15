@@ -137,4 +137,11 @@ function Annotations:draw(imageIdx, transform)
   end
 end
 
+function Annotations:save()
+  -- print(unpack(self.imageAnnotations))
+  for _, ann in pairs(self.imageAnnotations) do
+    print(unpack(ann))
+  end
+end
+
 return Annotations

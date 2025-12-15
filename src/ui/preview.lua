@@ -139,7 +139,7 @@ end
 function Preview:incrementIdx()
   self.currentImageIdx = (self.currentImageIdx % #self.allImages) + 1
   self.zoom = 1
-  self.panX, self.panY = 0,0
+  self.panX, self.panY = 0, 0
 end
 
 return Preview

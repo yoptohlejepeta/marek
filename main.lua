@@ -41,6 +41,19 @@ function love.load()
       }
     )
   )
+
+  table.insert(
+    AppSidebar.elements,
+    Button:new(
+      {
+        x = 20,
+        y = 120,
+        color = Color.GREEN,
+        text = "Save",
+        action_f = function() AppAnnotations:save() end,
+      }
+    )
+  )
 end
 
 function love.update(dt)

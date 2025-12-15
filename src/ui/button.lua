@@ -5,6 +5,7 @@ local Color = require("src.ui.colors")
 ---@field y number y coordinate
 ---@field width number width of button
 ---@field height number height of button
+---@field color table
 ---@field text string? text of button
 ---@field image love.Image? image
 ---@field action_f function
@@ -16,6 +17,7 @@ function Button:new(opts)
   opts = opts or {}
   opts.width = opts.width or 0
   opts.height = opts.height or 0
+  opts.color = opts.color or Color.BLUE
 
   setmetatable(opts, self)
   self.__index = self
@@ -24,7 +26,7 @@ end
 
 --- Draw button
 function Button:draw()
-  local r, g, b = unpack(Color.BLUE)
+  local r, g, b = unpack(self.color)
   local a = self.is_hovered and 0.7 or 1
   love.graphics.setColor(r, g, b, a)
 
@@ -58,4 +60,3 @@ function Button:update()
 end
 
 return Button
-
