@@ -1,29 +1,51 @@
 import sys
 
-from PySide6.QtCore import QSize, Qt
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton
+from PySide6.QtCore import QSize
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QMainWindow,
+    QWidget,
+    QFileDialog,
+)
+import qdarktheme
+
+from src.widgets.sidebar import Sidebar
+from src.widgets.canvas import Canvas
 
 
-# Subclass QMainWindow to customize your application's main window
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Annotation Program")
+        self.setGeometry(100, 100, 1200, 800)
 
-        self.setWindowTitle("My App")
+        layout = QHBoxLayout()
 
-        button = QPushButton("Press Me!")
+        self.sidebar = Sidebar()
+        self.sidebar.open_image_clicked.connect(self.open_image)
+        layout.addWidget(self.sidebar, 1)
 
-        self.setFixedSize(QSize(400, 300))
+        self.canvas = Canvas()
+        layout.addWidget(self.canvas, 4)
 
-        # Set the central widget of the Window.
-        self.setCentralWidget(button)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+
+    def open_image(self):
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Open Image", "", "Images (*.png *.jpg *.jpeg *.bmp)"
+        )
+        if file_path:
+            self.canvas.load_image(file_path)
 
 
 app = QApplication(sys.argv)
+qdarktheme.setup_theme("auto")
 
 window = MainWindow()
 window.show()
-
 
 
 if __name__ == "__main__":
