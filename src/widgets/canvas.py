@@ -2,7 +2,7 @@ from enum import StrEnum
 import math
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QImage, QPainter, QPen, QColor, Qt, QBrush
-from PySide6.QtCore import QPoint, QTimer, QPointF
+from PySide6.QtCore import QPoint, QPointF
 from PySide6.QtGui import QPainterPath
 
 CLOSE_THRESHOLD = 15
@@ -145,10 +145,7 @@ class Canvas(QWidget):
             match self.tool:
                 case Tool.PEN:
                     self.drawing = True
-                    if not self.current_points:
-                        self.current_points = [click_pos]
-                    else:
-                        self.current_points.append(click_pos)
+                    self.current_points.append(click_pos)
                 case Tool.ERASER:
                     self.objects = [
                         obj
@@ -167,7 +164,6 @@ class Canvas(QWidget):
         if self.drawing and (event.buttons() & Qt.MouseButton.LeftButton):
             new_point = self.image_coords(event.pos())
 
-            # Optimization: don't add point if it's identical to the last one
             if not self.current_points or self.current_points[-1] != new_point:
                 self.current_points.append(new_point)
             self.update()

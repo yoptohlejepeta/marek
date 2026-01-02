@@ -22,6 +22,8 @@ class Sidebar(QWidget):
     pen = Signal()
     eraser = Signal()
     save = Signal()
+    nextImage = Signal()
+    prevImage = Signal()
 
     def __init__(self):
         super().__init__()
@@ -33,12 +35,9 @@ class Sidebar(QWidget):
 
         imageButtonLayout = QHBoxLayout()
 
-        fileButton = QPushButton("Open Image")
+        fileButton = QPushButton("Open Images")
         fileButton.clicked.connect(self.open_image_clicked.emit)
         imageButtonLayout.addWidget(fileButton)
-
-        # filesButton = QPushButton("Open Images")
-        # imageButtonLayout.addWidget(filesButton)
 
         sidebarLayout.addLayout(imageButtonLayout)
 
@@ -60,6 +59,16 @@ class Sidebar(QWidget):
         sidebarLayout.addLayout(toolsLayout)
 
         sidebarLayout.addStretch()
+
+        nextPrevLayout = QHBoxLayout()
+        nextButton = QPushButton("➡️")
+        prevButton = QPushButton("⬅️")
+        nextButton.clicked.connect(self.nextImage.emit)
+        prevButton.clicked.connect(self.prevImage.emit)
+        nextPrevLayout.addWidget(prevButton)
+        nextPrevLayout.addWidget(nextButton)
+
+        sidebarLayout.addLayout(nextPrevLayout)
 
         self.setLayout(sidebarLayout)
 
