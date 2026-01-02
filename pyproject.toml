@@ -1,0 +1,16 @@
+[project]
+name = "MAReK"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyqtdarktheme>=2.1.0",
+    "pyside6>=6.10.1",
+]
+
+[dependency-groups]
+dev = ["pip>=25.3"]
+
+[tool.pyside6-project]
+files = ["src/main.py"]
