@@ -1,4 +1,11 @@
-from PySide6.QtWidgets import QVBoxLayout, QWidget, QSizePolicy, QPushButton
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
+    QSizePolicy,
+    QPushButton,
+)
 from PySide6.QtCore import Signal
 
 
@@ -13,15 +20,30 @@ class Sidebar(QWidget):
         sidebarLayout.setContentsMargins(5, 5, 5, 5)
         sidebarLayout.setSpacing(5)
 
-        open_btn = QPushButton("Open Image")
-        open_btn.clicked.connect(self.open_image_clicked.emit)
-        sidebarLayout.addWidget(open_btn)
+        imageButtonLayout = QHBoxLayout()
+
+        fileButton = QPushButton("Open Image")
+        fileButton.clicked.connect(self.open_image_clicked.emit)
+        imageButtonLayout.addWidget(fileButton)
+
+        filesButton = QPushButton("Open Images")
+        imageButtonLayout.addWidget(filesButton)
+
+        sidebarLayout.addLayout(imageButtonLayout)
+
+        # sidebarLayout.addStretch()
+        vSpace = QSpacerItem(1, 50)
+        sidebarLayout.addSpacerItem(vSpace)
+
+        toolsLayout = QHBoxLayout()
+
+        toolsLayout.addWidget(QPushButton("✏️ Pen"))
+        toolsLayout.addWidget(QPushButton("🧹 Eraser"))
+        toolsLayout.addWidget(QPushButton("💾 Save"))
+
+        sidebarLayout.addLayout(toolsLayout)
 
         sidebarLayout.addStretch()
-
-        sidebarLayout.addWidget(QPushButton("✏️ Pen"))
-        sidebarLayout.addWidget(QPushButton("🧹 Eraser"))
-        sidebarLayout.addWidget(QPushButton("💾 Save"))
 
         self.setLayout(sidebarLayout)
 

@@ -1,6 +1,5 @@
 import sys
 
-from PySide6.QtCore import QSize
 from PySide6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -17,7 +16,7 @@ from src.widgets.canvas import Canvas
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Annotation Program")
+        self.setWindowTitle("MAReK")
         self.setGeometry(100, 100, 1200, 800)
 
         layout = QHBoxLayout()
