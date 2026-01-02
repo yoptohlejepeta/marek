@@ -6,6 +6,7 @@ from PySide6.QtCore import QPoint, QPointF
 from PySide6.QtGui import QPainterPath
 
 CLOSE_THRESHOLD = 15
+MIN_POINT_DISTANCE = 2
 COLORS = [
     QColor(255, 0, 0),
     QColor(0, 255, 0),
@@ -108,9 +109,44 @@ class Canvas(QWidget):
         screen_points = [self.screen_coords(p) for p in points]
 
         if closed and len(screen_points) >= 3:
-            painter.drawPolygon(screen_points)
+            path = self._create_smooth_path(screen_points, closed=True)
+            painter.drawPath(path)
         else:
-            painter.drawPolyline(screen_points)
+            path = self._create_smooth_path(screen_points, closed=False)
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.drawPath(path)
+
+    def _create_smooth_path(self, points, closed=False):
+        path = QPainterPath()
+        if len(points) < 2:
+            return path
+
+        if len(points) == 2:
+            path.moveTo(QPointF(points[0].x(), points[0].y()))
+            path.lineTo(QPointF(points[1].x(), points[1].y()))
+            return path
+
+        path.moveTo(QPointF(points[0].x(), points[0].y()))
+
+        for i in range(1, len(points) - 1):
+            p1 = points[i]
+            p2 = points[i + 1]
+
+            ctrl_x = p1.x()
+            ctrl_y = p1.y()
+            end_x = (p1.x() + p2.x()) / 2
+            end_y = (p1.y() + p2.y()) / 2
+
+            path.quadTo(QPointF(ctrl_x, ctrl_y), QPointF(end_x, end_y))
+
+        last = points[-1]
+        path.lineTo(QPointF(last.x(), last.y()))
+
+        if closed:
+            first = points[0]
+            path.lineTo(QPointF(first.x(), first.y()))
+
+        return path
 
     def _polygon_contains(self, polygon, point):
         path = QPainterPath()
@@ -164,9 +200,15 @@ class Canvas(QWidget):
         if self.drawing and (event.buttons() & Qt.MouseButton.LeftButton):
             new_point = self.image_coords(event.pos())
 
-            if not self.current_points or self.current_points[-1] != new_point:
+            if self.current_points:
+                last = self.current_points[-1]
+                dist = math.hypot(new_point.x() - last.x(), new_point.y() - last.y())
+                if dist >= MIN_POINT_DISTANCE:
+                    self.current_points.append(new_point)
+                    self.update()
+            else:
                 self.current_points.append(new_point)
-            self.update()
+                self.update()
 
         elif event.buttons() & Qt.MouseButton.RightButton:
             delta = event.pos() - self.pan_start
