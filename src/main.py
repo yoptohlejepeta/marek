@@ -22,10 +22,14 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout()
 
         self.sidebar = Sidebar()
+        self.canvas = Canvas()
+
         self.sidebar.open_image_clicked.connect(self.open_image)
+        self.sidebar.pen.connect(self.canvas.set_tool_pen)
+        self.sidebar.eraser.connect(self.canvas.set_tool_eraser)
+        self.sidebar.save.connect(self.canvas.save)
         layout.addWidget(self.sidebar, 1)
 
-        self.canvas = Canvas()
         layout.addWidget(self.canvas, 4)
 
         widget = QWidget()

@@ -3,14 +3,25 @@ from PySide6.QtWidgets import (
     QSpacerItem,
     QVBoxLayout,
     QWidget,
-    QSizePolicy,
     QPushButton,
 )
 from PySide6.QtCore import Signal
 
 
 class Sidebar(QWidget):
+    """
+    Attributes
+    ----------
+    open_image_clicked : open image signal
+    pen : pen mode
+    eraser : eraser mode
+    save : save current objects
+    """
+
     open_image_clicked = Signal()
+    pen = Signal()
+    eraser = Signal()
+    save = Signal()
 
     def __init__(self):
         super().__init__()
@@ -26,20 +37,25 @@ class Sidebar(QWidget):
         fileButton.clicked.connect(self.open_image_clicked.emit)
         imageButtonLayout.addWidget(fileButton)
 
-        filesButton = QPushButton("Open Images")
-        imageButtonLayout.addWidget(filesButton)
+        # filesButton = QPushButton("Open Images")
+        # imageButtonLayout.addWidget(filesButton)
 
         sidebarLayout.addLayout(imageButtonLayout)
 
-        # sidebarLayout.addStretch()
         vSpace = QSpacerItem(1, 50)
         sidebarLayout.addSpacerItem(vSpace)
 
         toolsLayout = QHBoxLayout()
 
-        toolsLayout.addWidget(QPushButton("✏️ Pen"))
-        toolsLayout.addWidget(QPushButton("🧹 Eraser"))
-        toolsLayout.addWidget(QPushButton("💾 Save"))
+        penButton = QPushButton("✏️ Pen")
+        eraseButton = QPushButton("🧹 Eraser")
+        saveButton = QPushButton("💾 Save")
+        penButton.clicked.connect(self.pen.emit)
+        eraseButton.clicked.connect(self.eraser.emit)
+        saveButton.clicked.connect(self.save.emit)
+        toolsLayout.addWidget(penButton)
+        toolsLayout.addWidget(eraseButton)
+        toolsLayout.addWidget(saveButton)
 
         sidebarLayout.addLayout(toolsLayout)
 

@@ -1,7 +1,9 @@
+from enum import StrEnum
 import math
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QImage, QPainter, QPen, QColor, Qt, QBrush
-from PySide6.QtCore import QPoint
+from PySide6.QtCore import QPoint, QTimer, QPointF
+from PySide6.QtGui import QPainterPath
 
 CLOSE_THRESHOLD = 15
 COLORS = [
@@ -13,6 +15,11 @@ COLORS = [
 ]
 
 
+class Tool(StrEnum):
+    PEN = "pen"
+    ERASER = "eraser"
+
+
 class Canvas(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,11 +27,13 @@ class Canvas(QWidget):
         self.zoom = 1.0
         self.offset = QPoint(0, 0)
         self.drawing = False
-        self.current_points = []
+        self.current_points: list[QPoint] = []
         self.objects = []
         self.pan_start = QPoint(0, 0)
+        self.tool: Tool = Tool.PEN
 
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.setMouseTracking(True)
 
     def load_image(self, file_path):
         self.image = QImage(file_path)
@@ -103,6 +112,11 @@ class Canvas(QWidget):
         else:
             painter.drawPolyline(screen_points)
 
+    def _polygon_contains(self, polygon, point):
+        path = QPainterPath()
+        path.addPolygon([QPointF(p.x(), p.y()) for p in polygon])
+        return path.contains(QPointF(point.x(), point.y()))
+
     def screen_coords(self, image_point):
         x = int(image_point.x() * self.zoom + self.offset.x())
         y = int(image_point.y() * self.zoom + self.offset.y())
@@ -118,7 +132,7 @@ class Canvas(QWidget):
         else:
             self.zoom /= zoom_factor
 
-        self.zoom = max(0.1, min(self.zoom, 5.0))
+        self.zoom = max(0.1, min(self.zoom, 10.0))
         self.update()
 
     def mousePressEvent(self, event):
@@ -126,11 +140,21 @@ class Canvas(QWidget):
             return
 
         if event.button() == Qt.MouseButton.LeftButton:
-            self.drawing = True
-            if not self.current_points:
-                self.current_points = [self.image_coords(event.pos())]
-            else:
-                self.current_points.append(self.image_coords(event.pos()))
+            click_pos = self.image_coords(event.pos())
+
+            match self.tool:
+                case Tool.PEN:
+                    self.drawing = True
+                    if not self.current_points:
+                        self.current_points = [click_pos]
+                    else:
+                        self.current_points.append(click_pos)
+                case Tool.ERASER:
+                    self.objects = [
+                        obj
+                        for obj in self.objects
+                        if not self._polygon_contains(obj, click_pos)
+                    ]
             self.update()
 
         elif event.button() == Qt.MouseButton.RightButton:
@@ -188,3 +212,11 @@ class Canvas(QWidget):
         super().resizeEvent(event)
         if self.image:
             self.fit_to_window()
+
+    def set_tool_pen(self):
+        self.tool = Tool.PEN
+
+    def set_tool_eraser(self):
+        self.tool = Tool.ERASER
+
+    def save(self): ...
