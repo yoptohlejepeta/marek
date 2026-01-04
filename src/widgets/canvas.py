@@ -5,6 +5,8 @@ from PySide6.QtGui import QImage, QPainter, QPen, QColor, Qt, QBrush
 from PySide6.QtCore import QPoint, QPointF
 from PySide6.QtGui import QPainterPath
 
+from src.models.object import Object
+
 CLOSE_THRESHOLD = 15
 MIN_POINT_DISTANCE = 2
 COLORS = [
@@ -25,11 +27,12 @@ class Canvas(QWidget):
     def __init__(self):
         super().__init__()
         self.image = None
+        self.image_path = None
         self.zoom = 1.0
         self.offset = QPoint(0, 0)
         self.drawing = False
         self.current_points: list[QPoint] = []
-        self.objects = []
+        self.objects: list[Object] = []
         self.pan_start = QPoint(0, 0)
         self.tool: Tool = Tool.PEN
 
@@ -37,6 +40,7 @@ class Canvas(QWidget):
         self.setMouseTracking(True)
 
     def load_image(self, file_path):
+        self.image_path = file_path
         self.image = QImage(file_path)
         self.zoom = 1.0
         self.offset = QPoint(0, 0)
@@ -109,42 +113,25 @@ class Canvas(QWidget):
         screen_points = [self.screen_coords(p) for p in points]
 
         if closed and len(screen_points) >= 3:
-            path = self._create_smooth_path(screen_points, closed=True)
+            path = self._create_path(screen_points, closed=True)
             painter.drawPath(path)
         else:
-            path = self._create_smooth_path(screen_points, closed=False)
+            path = self._create_path(screen_points, closed=False)
             painter.setBrush(Qt.BrushStyle.NoBrush)
             painter.drawPath(path)
 
-    def _create_smooth_path(self, points, closed=False):
+    def _create_path(self, points, closed=False):
         path = QPainterPath()
         if len(points) < 2:
             return path
 
-        if len(points) == 2:
-            path.moveTo(QPointF(points[0].x(), points[0].y()))
-            path.lineTo(QPointF(points[1].x(), points[1].y()))
-            return path
-
         path.moveTo(QPointF(points[0].x(), points[0].y()))
 
-        for i in range(1, len(points) - 1):
-            p1 = points[i]
-            p2 = points[i + 1]
-
-            ctrl_x = p1.x()
-            ctrl_y = p1.y()
-            end_x = (p1.x() + p2.x()) / 2
-            end_y = (p1.y() + p2.y()) / 2
-
-            path.quadTo(QPointF(ctrl_x, ctrl_y), QPointF(end_x, end_y))
-
-        last = points[-1]
-        path.lineTo(QPointF(last.x(), last.y()))
+        for p in points[1:]:
+            path.lineTo(QPointF(p.x(), p.y()))
 
         if closed:
-            first = points[0]
-            path.lineTo(QPointF(first.x(), first.y()))
+            path.closeSubpath()
 
         return path
 
@@ -257,4 +244,16 @@ class Canvas(QWidget):
     def set_tool_eraser(self):
         self.tool = Tool.ERASER
 
-    def save(self): ...
+    def save(self):
+        if not self.image_path or not self.objects:
+            return
+
+        from pathlib import Path
+        import numpy as np
+
+        polygons = [
+            [(p.x(), p.y()) for p in obj] for obj in self.objects
+        ]
+
+        save_path = Path(self.image_path).with_suffix(".npy")
+        np.save(save_path, {"image_path": self.image_path, "objects": polygons}, allow_pickle=True)

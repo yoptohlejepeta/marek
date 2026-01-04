@@ -1,6 +1,6 @@
+![logo](./assets/logo.svg) 
 # MAReK
 
-![logo](./assets/logo.svg) 
 
 ## Development
 

@@ -62,8 +62,7 @@ class MainWindow(QMainWindow):
         self.canvas.load_image(self.images_paths[self.currImgIdx])
 
 
-
-app = QApplication(sys.argv)
+app = QApplication()
 qdarktheme.setup_theme("auto")
 
 window = MainWindow()
