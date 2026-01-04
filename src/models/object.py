@@ -28,5 +28,9 @@ class Object(BaseModel):
         return v
 
     def save(self, filePath: str):
-        """Save annotated objects to .npy"""
-        np.save(filePath, self.annotatedObjects, allow_pickle=True)
+        """Save annotated objects to .npy file"""
+        save_data = {
+            "imagePath": self.imagePath,
+            "annotatedObjects": [(p.x(), p.y()) for p in self.annotatedObjects]
+        }
+        np.save(filePath, save_data, allow_pickle=True)

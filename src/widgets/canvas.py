@@ -2,10 +2,10 @@ from enum import StrEnum
 import math
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QImage, QPainter, QPen, QColor, Qt, QBrush
-from PySide6.QtCore import QPoint, QPointF
+from PySide6.QtCore import QPoint, QPointF, Signal
 from PySide6.QtGui import QPainterPath
 
-from src.models.object import Object
+
 
 CLOSE_THRESHOLD = 15
 MIN_POINT_DISTANCE = 2
@@ -24,6 +24,8 @@ class Tool(StrEnum):
 
 
 class Canvas(QWidget):
+    objects_updated = Signal()
+    
     def __init__(self):
         super().__init__()
         self.image = None
@@ -32,19 +34,19 @@ class Canvas(QWidget):
         self.offset = QPoint(0, 0)
         self.drawing = False
         self.current_points: list[QPoint] = []
-        self.objects: list[Object] = []
+        self.objects: list[list[QPoint]] = []
         self.pan_start = QPoint(0, 0)
         self.tool: Tool = Tool.PEN
 
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
 
-    def load_image(self, file_path):
+    def load_image(self, file_path, objects: list[list[QPoint]] | None = None):
         self.image_path = file_path
         self.image = QImage(file_path)
         self.zoom = 1.0
         self.offset = QPoint(0, 0)
-        self.objects = []
+        self.objects = objects if objects else []
         self.current_points = []
         self.fit_to_window()
         self.update()
@@ -175,6 +177,7 @@ class Canvas(QWidget):
                         for obj in self.objects
                         if not self._polygon_contains(obj, click_pos)
                     ]
+                    self.objects_updated.emit()
             self.update()
 
         elif event.button() == Qt.MouseButton.RightButton:
@@ -217,6 +220,7 @@ class Canvas(QWidget):
 
                 if distance <= CLOSE_THRESHOLD:
                     self.objects.append(self.current_points)
+                    self.objects_updated.emit()
                     self.current_points = []
 
             self.update()
@@ -256,4 +260,5 @@ class Canvas(QWidget):
         ]
 
         save_path = Path(self.image_path).with_suffix(".npy")
-        np.save(save_path, {"image_path": self.image_path, "objects": polygons}, allow_pickle=True)
+        data = np.array({"image_path": self.image_path, "objects": polygons}, dtype=object)
+        np.save(save_path, data, allow_pickle=True)
