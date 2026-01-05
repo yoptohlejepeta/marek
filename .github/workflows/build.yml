@@ -41,7 +41,7 @@ jobs:
         with:
           nuitka-version: main
           script-name: src/main.py
-          mode: standalone
+          mode: onefile
           enable-plugins: pyside6
           output-dir: build
           output-filename: MAReK
