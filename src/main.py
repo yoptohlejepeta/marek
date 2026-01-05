@@ -1,4 +1,4 @@
-import qdarktheme
+# import qdarktheme
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
 
 
 app = QApplication()
-qdarktheme.setup_theme("auto")
+# qdarktheme.setup_theme("auto")
 
 window = MainWindow()
 window.show()
