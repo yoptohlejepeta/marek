@@ -3,7 +3,7 @@ name: Build Installers
 on:
   push:
     branches: [main, test/deploy]
-    tags: ["v*"]
+    tags: ['v*']
   workflow_dispatch:
 
 jobs:
@@ -28,7 +28,6 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-          version: "latest"
 
       - name: Set up Python
         run: uv python install 3.12
@@ -36,37 +35,26 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
-      - name: Build Standalone with Nuitka
-        run: |
-          uv run python -m nuitka \
-            --standalone \
-            --enable-plugin=pyside6 \
-            --output-dir=build \
-            --output-filename=MAReK \
-            src/main.py
+      # --- THE BUILD STEP ---
+      - name: Build with PySide6-Deploy
+        run: uv run pyside6-deploy --config-file pysidedeploy.spec
 
-      # --- WINDOWS: Create .exe Installer using NSIS ---
-      - name: Build Windows Installer
+      - name: Build Windows Installer (NSIS)
         if: matrix.os == 'windows-latest'
-        run: makensis installer.nsi
+        run: |
+          makensis installer.nsi 
 
-      # --- MACOS: Create .dmg ---
       - name: Build macOS DMG
         if: matrix.os == 'macos-latest'
         run: |
           brew install create-dmg
-          create-dmg --volname "MAReK Installer" --app-drop-link 600 185 "build/MAReK.dmg" "build/MAReK.dist/"
-
-      # --- LINUX: Zip Dist ---
-      - name: Zip Linux Build
-        if: matrix.os == 'ubuntu-latest'
-        run: zip -r build/MAReK-Linux.zip build/MAReK.dist/
+          create-dmg --volname "MAReK" --app-drop-link 600 185 "deployment/MAReK.dmg" "deployment/MAReK.app/"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: MAReK-${{ runner.os }}
           path: |
-            build/*.exe
-            build/*.dmg
-            build/*.zip
+            deployment/*.exe
+            deployment/*.dmg
+            deployment/*.zip
