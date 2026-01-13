@@ -1,10 +1,13 @@
-from enum import StrEnum
 import math
-from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QImage, QPainter, QPen, QColor, Qt, QBrush
-from PySide6.QtCore import QPoint, QPointF, Signal
-from PySide6.QtGui import QPainterPath
+from enum import StrEnum
+from pathlib import Path
 
+import numpy as np
+from skimage.draw import polygon as draw_polygon
+from skimage.measure import find_contours
+from PySide6.QtCore import QPoint, QPointF, Signal
+from PySide6.QtGui import QBrush, QColor, QImage, QPainter, QPainterPath, QPen, Qt
+from PySide6.QtWidgets import QWidget
 
 CLOSE_THRESHOLD = 15
 MIN_POINT_DISTANCE = 2
@@ -69,6 +72,7 @@ class Canvas(QWidget):
             List of polygons loaded from .npy file, or None if file doesn't exist.
         """
         from pathlib import Path
+
         import numpy as np
 
         npy_path = Path(file_path).with_suffix(".npy")
@@ -77,12 +81,22 @@ class Canvas(QWidget):
 
         try:
             data = np.load(npy_path, allow_pickle=True).item()
-            polygons = data.get("objects", [])
+            labels = data["labels"] if isinstance(data, dict) else data
             objects = []
-            for polygon in polygons:
-                qpoints = [QPoint(int(x), int(y)) for x, y in polygon]
-                objects.append(qpoints)
-            return objects
+
+            for label_num in np.unique(labels):
+                if label_num == 0:
+                    continue
+
+                mask = (labels == label_num).astype(float)
+                contours = find_contours(mask, 0.5)
+
+                if contours:
+                    contour = contours[0]
+                    qpoints = [QPoint(int(y), int(x)) for x, y in contour]
+                    if len(qpoints) >= 3:
+                        objects.append(qpoints)
+            return objects if objects else None
         except Exception as e:
             print(f"Error loading objects from {npy_path}: {e}")
             return None
@@ -292,16 +306,18 @@ class Canvas(QWidget):
         self.tool = Tool.ERASER
 
     def save(self):
-        if not self.image_path or not self.objects:
+        if not (self.image_path and self.image) or not self.objects:
             return
 
-        from pathlib import Path
-        import numpy as np
+        labels = np.zeros((self.image.height(), self.image.width()), dtype=np.uint16)
 
-        polygons = [[(p.x(), p.y()) for p in obj] for obj in self.objects]
+        for label_num, obj in enumerate(self.objects, start=1):
+            if len(obj) >= 3:
+                rows = [p.y() for p in obj]
+                cols = [p.x() for p in obj]
+                rr, cc = draw_polygon(rows, cols, labels.shape)
+                labels[rr, cc] = label_num
 
         save_path = Path(self.image_path).with_suffix(".npy")
-        data = np.array(
-            {"image_path": self.image_path, "objects": polygons}, dtype=object
-        )
-        np.save(save_path, data, allow_pickle=True)
+        data = {"labels": labels}
+        np.save(save_path, np.array(data, dtype=object), allow_pickle=True)
