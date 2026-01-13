@@ -1,4 +1,3 @@
-# import qdarktheme
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -27,6 +26,7 @@ class MainWindow(QMainWindow):
         self.sidebar = Sidebar()
 
         self.sidebar.open_image_clicked.connect(self.open_images)
+        self.sidebar.hand.connect(self.canvas.set_tool_hand)
         self.sidebar.pen.connect(self.canvas.set_tool_pen)
         self.sidebar.eraser.connect(self.canvas.set_tool_eraser)
         self.sidebar.save.connect(self.canvas.save)
@@ -82,7 +82,10 @@ class MainWindow(QMainWindow):
 
 
 app = QApplication()
-# qdarktheme.setup_theme("auto")
+
+# stylesheet_path = Path(__file__).parent.parent / "assets" / "styles.qss"
+# with open(stylesheet_path, "r") as f:
+#     app.setStyleSheet(f.read())
 
 window = MainWindow()
 window.show()
