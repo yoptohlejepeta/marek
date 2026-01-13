@@ -19,6 +19,7 @@ class Sidebar(QWidget):
     """
 
     open_image_clicked = Signal()
+    hand = Signal()
     pen = Signal()
     eraser = Signal()
     save = Signal()
@@ -46,12 +47,15 @@ class Sidebar(QWidget):
 
         toolsLayout = QHBoxLayout()
 
+        handButton = QPushButton("✋ Hand")
         penButton = QPushButton("✏️ Pen")
         eraseButton = QPushButton("🧹 Eraser")
         saveButton = QPushButton("💾 Save")
+        handButton.clicked.connect(self.hand.emit)
         penButton.clicked.connect(self.pen.emit)
         eraseButton.clicked.connect(self.eraser.emit)
         saveButton.clicked.connect(self.save.emit)
+        toolsLayout.addWidget(handButton)
         toolsLayout.addWidget(penButton)
         toolsLayout.addWidget(eraseButton)
         toolsLayout.addWidget(saveButton)

@@ -19,7 +19,14 @@ def visualize(npy_path: str):
 
     for i, polygon_points in enumerate(objects):
         color = COLORS[i % len(COLORS)]
-        polygon = Polygon(polygon_points, fill=True, facecolor=color, alpha=0.3, edgecolor=color, linewidth=2)
+        polygon = Polygon(
+            polygon_points,
+            fill=True,
+            facecolor=color,
+            alpha=0.3,
+            edgecolor=color,
+            linewidth=2,
+        )
         plt.gca().add_patch(polygon)
 
     plt.axis("off")

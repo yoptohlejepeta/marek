@@ -6,7 +6,6 @@ from PySide6.QtCore import QPoint, QPointF, Signal
 from PySide6.QtGui import QPainterPath
 
 
-
 CLOSE_THRESHOLD = 15
 MIN_POINT_DISTANCE = 2
 COLORS = [
@@ -19,13 +18,14 @@ COLORS = [
 
 
 class Tool(StrEnum):
+    HAND = "hand"
     PEN = "pen"
     ERASER = "eraser"
 
 
 class Canvas(QWidget):
     objects_updated = Signal()
-    
+
     def __init__(self):
         super().__init__()
         self.image = None
@@ -36,7 +36,7 @@ class Canvas(QWidget):
         self.current_points: list[QPoint] = []
         self.objects: list[list[QPoint]] = []
         self.pan_start = QPoint(0, 0)
-        self.tool: Tool = Tool.PEN
+        self.tool: Tool = Tool.HAND
 
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
@@ -46,10 +46,46 @@ class Canvas(QWidget):
         self.image = QImage(file_path)
         self.zoom = 1.0
         self.offset = QPoint(0, 0)
+
+        if objects is None:
+            objects = self._load_objects_from_npy(file_path)
+
         self.objects = objects if objects else []
         self.current_points = []
         self.fit_to_window()
         self.update()
+
+    def _load_objects_from_npy(self, file_path: str) -> list[list[QPoint]] | None:
+        """Load objects from .npy file if it exists.
+
+        Parameters
+        ----------
+        file_path : str
+            Path to the image file.
+
+        Returns
+        -------
+        list[list[QPoint]] | None
+            List of polygons loaded from .npy file, or None if file doesn't exist.
+        """
+        from pathlib import Path
+        import numpy as np
+
+        npy_path = Path(file_path).with_suffix(".npy")
+        if not npy_path.exists():
+            return None
+
+        try:
+            data = np.load(npy_path, allow_pickle=True).item()
+            polygons = data.get("objects", [])
+            objects = []
+            for polygon in polygons:
+                qpoints = [QPoint(int(x), int(y)) for x, y in polygon]
+                objects.append(qpoints)
+            return objects
+        except Exception as e:
+            print(f"Error loading objects from {npy_path}: {e}")
+            return None
 
     def fit_to_window(self):
         if not self.image:
@@ -165,46 +201,50 @@ class Canvas(QWidget):
             return
 
         if event.button() == Qt.MouseButton.LeftButton:
-            click_pos = self.image_coords(event.pos())
-
             match self.tool:
+                case Tool.HAND:
+                    self.pan_start = event.pos()
                 case Tool.PEN:
+                    click_pos = self.image_coords(event.pos())
                     self.drawing = True
                     self.current_points.append(click_pos)
+                    self.update()
                 case Tool.ERASER:
+                    click_pos = self.image_coords(event.pos())
                     self.objects = [
                         obj
                         for obj in self.objects
                         if not self._polygon_contains(obj, click_pos)
                     ]
                     self.objects_updated.emit()
-            self.update()
-
-        elif event.button() == Qt.MouseButton.RightButton:
-            self.pan_start = event.pos()
+                    self.update()
 
     def mouseMoveEvent(self, event):
         if not self.image:
             return
 
-        if self.drawing and (event.buttons() & Qt.MouseButton.LeftButton):
-            new_point = self.image_coords(event.pos())
-
-            if self.current_points:
-                last = self.current_points[-1]
-                dist = math.hypot(new_point.x() - last.x(), new_point.y() - last.y())
-                if dist >= MIN_POINT_DISTANCE:
-                    self.current_points.append(new_point)
+        if event.buttons() & Qt.MouseButton.LeftButton:
+            match self.tool:
+                case Tool.HAND:
+                    delta = event.pos() - self.pan_start
+                    self.offset += delta
+                    self.pan_start = event.pos()
                     self.update()
-            else:
-                self.current_points.append(new_point)
-                self.update()
+                case Tool.PEN:
+                    if self.drawing:
+                        new_point = self.image_coords(event.pos())
 
-        elif event.buttons() & Qt.MouseButton.RightButton:
-            delta = event.pos() - self.pan_start
-            self.offset += delta
-            self.pan_start = event.pos()
-            self.update()
+                        if self.current_points:
+                            last = self.current_points[-1]
+                            dist = math.hypot(
+                                new_point.x() - last.x(), new_point.y() - last.y()
+                            )
+                            if dist >= MIN_POINT_DISTANCE:
+                                self.current_points.append(new_point)
+                                self.update()
+                        else:
+                            self.current_points.append(new_point)
+                            self.update()
 
     def mouseReleaseEvent(self, event):
         if not self.image:
@@ -242,6 +282,9 @@ class Canvas(QWidget):
         if self.image:
             self.fit_to_window()
 
+    def set_tool_hand(self):
+        self.tool = Tool.HAND
+
     def set_tool_pen(self):
         self.tool = Tool.PEN
 
@@ -255,10 +298,10 @@ class Canvas(QWidget):
         from pathlib import Path
         import numpy as np
 
-        polygons = [
-            [(p.x(), p.y()) for p in obj] for obj in self.objects
-        ]
+        polygons = [[(p.x(), p.y()) for p in obj] for obj in self.objects]
 
         save_path = Path(self.image_path).with_suffix(".npy")
-        data = np.array({"image_path": self.image_path, "objects": polygons}, dtype=object)
+        data = np.array(
+            {"image_path": self.image_path, "objects": polygons}, dtype=object
+        )
         np.save(save_path, data, allow_pickle=True)
