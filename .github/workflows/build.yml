@@ -42,13 +42,22 @@ jobs:
       - name: Build Windows Installer (NSIS)
         if: matrix.os == 'windows-latest'
         run: |
+          mkdir -p deployment/MAReK
+          cp -r MAReK.dist/* deployment/MAReK/
           makensis installer.nsi
 
       - name: Build macOS DMG
         if: matrix.os == 'macos-latest'
         run: |
           brew install create-dmg
-          create-dmg --volname "MAReK" --app-drop-link 600 185 "deployment/MAReK.dmg" "deployment/MAReK.app/"
+          mkdir -p deployment
+          create-dmg --volname "MAReK" --app-drop-link 600 185 "deployment/MAReK.dmg" "MAReK.app/"
+
+      - name: Package Linux Build
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p deployment
+          zip -r deployment/MAReK-Linux.zip MAReK.dist
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
