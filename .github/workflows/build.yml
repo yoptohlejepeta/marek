@@ -1,22 +1,24 @@
-name: Build Installers
+name: Build Executables
 
 on:
   push:
-    branches: [main, test/deploy]
-    tags: ["v*"]
+    branches:
+      - main
+      - test/deploy
+    tags:
+      - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g., v1.0.0)"
+        required: false
+        default: "dev"
 
 jobs:
   build:
     strategy:
       matrix:
-        include:
-          - os: windows-latest
-            artifact_name: MAReK-Windows-Installer.exe
-          - os: macos-latest
-            artifact_name: MAReK.dmg
-          - os: ubuntu-latest
-            artifact_name: MAReK-Linux.zip
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -24,46 +26,52 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install 3.12
+          python-version: "3.12"
+          architecture: "x64"
 
       - name: Install dependencies
-        run: uv sync --frozen
-
-      # --- THE BUILD STEP ---
-      - name: Build with PySide6-Deploy
-        run: uv run pyside6-deploy src/main.py --config-file pysidedeploy.spec
-
-      - name: Build Windows Installer (NSIS)
-        if: matrix.os == 'windows-latest'
         run: |
-          mkdir -p deployment/MAReK
-          cp -r MAReK.dist/* deployment/MAReK/
-          makensis installer.nsi
+          pip install matplotlib numpy pydantic pyqtdarktheme pyside6
 
-      - name: Build macOS DMG
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew install create-dmg
-          mkdir -p deployment
-          create-dmg --volname "MAReK" --app-drop-link 600 185 "deployment/MAReK.dmg" "MAReK.app/"
-
-      - name: Package Linux Build
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          mkdir -p deployment
-          zip -r deployment/MAReK-Linux.zip MAReK.dist
+      - name: Build Executable
+        uses: Nuitka/Nuitka-Action@main
+        with:
+          nuitka-version: main
+          script-name: src/main.py
+          mode: onefile
+          enable-plugins: pyside6
+          output-dir: build
+          output-filename: MAReK
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: MAReK-${{ runner.os }}
           path: |
-            deployment/*.exe
-            deployment/*.dmg
-            deployment/*.zip
+            build/*.exe
+            build/*.bin
+            build/*.app/**/*
+            build/*.dist/**/*
+          include-hidden-files: true
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          draft: false
+          prerelease: false
