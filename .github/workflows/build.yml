@@ -3,7 +3,7 @@ name: Build Installers
 on:
   push:
     branches: [main, test/deploy]
-    tags: ['v*']
+    tags: ["v*"]
   workflow_dispatch:
 
 jobs:
@@ -37,12 +37,12 @@ jobs:
 
       # --- THE BUILD STEP ---
       - name: Build with PySide6-Deploy
-        run: uv run pyside6-deploy --config-file pysidedeploy.spec
+        run: uv run pyside6-deploy src/main.py --config-file pysidedeploy.spec
 
       - name: Build Windows Installer (NSIS)
         if: matrix.os == 'windows-latest'
         run: |
-          makensis installer.nsi 
+          makensis installer.nsi
 
       - name: Build macOS DMG
         if: matrix.os == 'macos-latest'
