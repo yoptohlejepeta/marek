@@ -52,6 +52,7 @@
               python312
 
               osv-scanner
+              act
 
               ccache
             ];
