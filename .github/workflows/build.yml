@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install matplotlib numpy pydantic pyqtdarktheme pyside6
+          pip install matplotlib numpy pyside6 scikit-image
 
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
