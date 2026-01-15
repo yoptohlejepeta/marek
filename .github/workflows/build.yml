@@ -2,7 +2,7 @@ name: Build Professional Installers
 
 on:
   push:
-    branches: [main]
+    branches: [main, test/deploy]
   workflow_dispatch:
 
 jobs:
