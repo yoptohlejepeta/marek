@@ -487,7 +487,9 @@ scipy==1.17.0 \
     --hash=sha256:f7df7941d71314e60a481e02d5ebcb3f0185b8d799c70d03d8258f6c80f3d467 \
     --hash=sha256:f9eb55bb97d00f8b7ab95cb64f873eb0bf54d9446264d9f3609130381233483f \
     --hash=sha256:fe508b5690e9eaaa9467fc047f833af58f1152ae51a0d0aed67aa5801f4dd7d6
-    # via scikit-image
+    # via
+    #   marek
+    #   scikit-image
 shiboken6==6.10.1 \
     --hash=sha256:5cf800917008587b551005a45add2d485cca66f5f7ecd5b320e9954e40448cc9 \
     --hash=sha256:9f2990f5b61b0b68ecadcd896ab4441f2cb097eef7797ecc40584107d9850d71 \
