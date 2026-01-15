@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout repository
+      - name: Check-out repository
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -31,47 +31,30 @@ jobs:
         with:
           python-version: "3.12"
           architecture: "x64"
+          cache: "pip"
+          cache-dependency-path: |
+            **/requirements*.txt
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
           script-name: src/main.py
-          mode: onefile
+          mode: standalone
           enable-plugins: pyside6
-          output-dir: build
-          output-filename: MAReK
+          disable-console: true
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: MAReK-${{ runner.os }}
+          name: ${{ runner.os }} Build
           path: |
             build/*.exe
             build/*.bin
-            build/*.app/**/*
-            build/*.dist/**/*
+            build/*.app/
+            build/*.dist/
           include-hidden-files: true
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          merge-multiple: true
-          path: artifacts
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/**/*
-          draft: false
-          prerelease: false
