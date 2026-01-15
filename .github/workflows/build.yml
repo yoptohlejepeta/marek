@@ -2,62 +2,59 @@ name: Build Executables
 
 on:
   push:
-    branches: [main, test/deploy]
-    tags: ["v*"]
+    branches:
+      - main
+      - test/deploy
+    tags:
+      - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g., v1.0.0)"
+        required: false
+        default: "dev"
 
 jobs:
   build:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
+
     runs-on: ${{ matrix.os }}
 
-    permissions:
-      contents: write
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Check-out repository
+        uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          architecture: "x64"
           cache: "pip"
+          cache-dependency-path: |
+            **/requirements*.txt
 
       - name: Install Dependencies
         run: |
-          pip install --upgrade pip
           pip install -r requirements.txt
-          pip install nuitka pyside6 numpy scipy scikit-image
 
       - name: Build Executable
-        run: |
-          python -m nuitka \
-            --standalone \
-            --enable-plugins=pyside6,numpy,scipy \
-            --include-package=skimage \
-            --disable-console \
-            --output-dir=build \
-            src/main.py
-
-      - name: Package for Distribution (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          cd build
-          mv main.dist ${{ runner.os }}-app
-          zip -r ../${{ runner.os }}-build.zip ${{ runner.os }}-app/
-
-      - name: Package for Distribution (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          cd build
-          Rename-Item -Path "main.dist" -NewName "Windows-app"
-          Compress-Archive -Path "Windows-app" -DestinationPath "..\\Windows-build.zip"
-
-      - name: Create Public Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: Nuitka/Nuitka-Action@main
         with:
-          files: "*-build.zip"
-          generate_release_notes: true
+          nuitka-version: main
+          script-name: src/main.py
+          mode: standalone
+          enable-plugins: pyside6
+          disable-console: true
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }} Build
+          path: |
+            build/*.exe
+            build/*.bin
+            build/*.app/
+            build/*.dist/
+          include-hidden-files: true
