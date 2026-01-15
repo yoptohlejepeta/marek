@@ -47,11 +47,12 @@ jobs:
           mode: standalone
           enable-plugins: pyside6
           disable-console: true
+          include-package: scipy,skimage
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ runner.os }} Build
+          name: MAReK-${{ runner.os }}
           path: |
             build/*.exe
             build/*.bin
