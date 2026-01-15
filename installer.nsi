@@ -1,26 +1,27 @@
-!include "MUI2.nsh"
+!define APPNAME "MAReK"
+!define COMPANYNAME "YourName"
+!define DESCRIPTION "PySide6 Scientific App"
 
-Name "MAReK Image Annotator"
-OutFile "deployment\MAReK-Installer.exe"
-InstallDir "$PROGRAMFILES\MAReK"
+!define SOURCE_DIR "dist\main.dist"
 
-!insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_DIRECTORY
-!insertmacro MUI_PAGE_INSTFILES
-!insertmacro MUI_PAGE_FINISH
-!insertmacro MUI_UNPAGE_CONFIRM
-!insertmacro MUI_UNPAGE_INSTFILES
-!insertmacro MUI_LANGUAGE "English"
+Name "${APPNAME}"
+OutFile "${APPNAME}-Windows-Setup.exe"
+InstallDir "$PROGRAMFILES64\${APPNAME}"
+RequestExecutionLevel admin
+
+Page directory
+Page instfiles
 
 Section "Install"
     SetOutPath "$INSTDIR"
-    File /r "deployment\MAReK\*.*" 
+    File /r "${SOURCE_DIR}\*"
     
-    CreateShortCut "$DESKTOP\MAReK.lnk" "$INSTDIR\MAReK.exe"
-    WriteUninstaller "$INSTDIR\Uninstall.exe"
+    CreateShortcut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\main.exe" "" "$INSTDIR\main.exe" 0
+    
+    WriteUninstaller "$INSTDIR\uninstall.exe"
 SectionEnd
 
 Section "Uninstall"
-    Delete "$DESKTOP\MAReK.lnk"
+    Delete "$DESKTOP\${APPNAME}.lnk"
     RMDir /r "$INSTDIR"
 SectionEnd
