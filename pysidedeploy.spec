@@ -21,7 +21,7 @@ icon =
 [python]
 
 # python path
-python_path =
+python_path = /home/petka/projects/marek/.venv/bin/python
 
 # python packages to install
 packages = Nuitka==2.8.9
@@ -68,7 +68,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --quiet --noinclude-qt-translations
+extra_args = --quiet --noinclude-qt-translations --include-package=scipy --include-package=skimage
 
 [buildozer]
 
