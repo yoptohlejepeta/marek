@@ -1,4 +1,4 @@
-name: Build Professional Installers
+name: PySide6 deploy app
 
 on:
   push:
@@ -14,39 +14,27 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: "Set up Python"
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version-file: ".python-version"
 
-      - name: Install Dependencies
-        run: |
-          pip install nuitka pyside6 numpy scipy scikit-image
-          pip install -r requirements.txt
-
-      - name: Build Linux Onefile
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update && sudo apt install -y libfontconfig1-dev libx11-xcb-dev
-          python -m nuitka --onefile --enable-plugins=pyside6,numpy,scipy --include-package=skimage --disable-console --output-dir=dist src/main.py
-
-      - name: Build Windows Standalone
-        if: runner.os == 'Windows'
-        run: |
-          python -m nuitka --standalone --enable-plugins=pyside6,numpy,scipy --include-package=skimage --disable-console --output-dir=dist src/main.py
-
-      - name: Create Windows Setup
-        if: runner.os == 'Windows'
-        uses: joncloud/makensis-action@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
-          script-file: "installer.nsi"
+          enable-cache: true
 
-      - name: Upload Installers
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+
+      - name: PySide6 deploy
+        run: uv run pyside6-deploy --config-file pysidedeploy.spec
+
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: MAReK-${{ runner.os }}-Installer
-          path: |
-            dist/*.bin
-            *.exe
+          name: MAReK-${{ matrix.os }}
+          path: build/
+          if-no-files-found: error
