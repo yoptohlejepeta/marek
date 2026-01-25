@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
 )
 
 from widgets.canvas import Canvas
-from widgets.sidebar import Sidebar
+from widgets.toolbar import ToolBar
 
 
 class MainWindow(QMainWindow):
@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout()
 
         self.canvas = Canvas()
-        self.sidebar = Sidebar()
+        self.sidebar = ToolBar()
 
         self.sidebar.open_image_clicked.connect(self.open_images)
         self.sidebar.hand.connect(self.canvas.set_tool_hand)
