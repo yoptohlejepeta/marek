@@ -6,8 +6,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from src.widgets.canvas import Canvas
-from src.widgets.sidebar import Sidebar
+from widgets.canvas import Canvas
+from widgets.sidebar import Sidebar
 
 
 class MainWindow(QMainWindow):

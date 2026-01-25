@@ -2,7 +2,7 @@
 !define COMPANYNAME "YourName"
 !define DESCRIPTION "PySide6 Scientific App"
 
-!define SOURCE_DIR "dist\main.dist"
+!define SOURCE_DIR "dist\MAReK"
 
 Name "${APPNAME}"
 OutFile "${APPNAME}-Windows-Setup.exe"
