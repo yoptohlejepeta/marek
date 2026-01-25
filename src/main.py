@@ -1,6 +1,5 @@
 import logging
 import sys
-from pathlib import Path
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -11,13 +10,6 @@ from PySide6.QtWidgets import (
 from widgets.bottombar import BottomBar
 from widgets.canvas import Canvas
 from widgets.toolbar import ToolBar
-
-log_file = Path(__file__).parent.parent / "app_errors.log"
-logging.basicConfig(
-    level=logging.ERROR,
-    filename=log_file,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
 
 
 def exception_hook(exc_type, exc_value, exc_traceback):
