@@ -69,9 +69,6 @@ class BottomBar(QWidget):
         self.adjustSize()
 
         self.setAutoFillBackground(True)
-        palette = self.palette()
-        palette.setColor(QPalette.ColorRole.Window, QColor(220, 224, 232, 200))
-        self.setPalette(palette)
 
     def update_counter(self, current: int, total: int):
         """Update the image counter display."""
