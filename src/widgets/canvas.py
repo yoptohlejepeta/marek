@@ -80,7 +80,9 @@ class Canvas(QWidget):
             return None
 
         try:
-            data = np.load(npy_path, allow_pickle=True).item()
+            data = np.load(npy_path, allow_pickle=True)
+            if isinstance(data, np.ndarray) and data.dtype == object:
+                data = data.item()
             labels = data["labels"] if isinstance(data, dict) else data
             objects = []
 

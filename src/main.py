@@ -1,12 +1,31 @@
+import logging
+import sys
+from pathlib import Path
+
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QMainWindow,
 )
 
+from widgets.bottombar import BottomBar
 from widgets.canvas import Canvas
 from widgets.toolbar import ToolBar
-from widgets.bottombar import BottomBar
+
+log_file = Path(__file__).parent.parent / "app_errors.log"
+logging.basicConfig(
+    level=logging.ERROR,
+    filename=log_file,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+
+def exception_hook(exc_type, exc_value, exc_traceback):
+    logging.error("Unhandled exception:", exc_info=(exc_type, exc_value, exc_traceback))
+    sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+
+sys.excepthook = exception_hook
 
 
 class MainWindow(QMainWindow):
