@@ -2,7 +2,7 @@ name: Build Executables
 
 on:
   push:
-    branches: [main, test/deploy]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
