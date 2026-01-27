@@ -3,7 +3,7 @@
 
 == Instalace pro Windows
 
-Je pravděpodobné, že Windows bude protestovat ve formě varování před cizím software oknem typu: #quote()[Chcete aplikaci od neznámého vydavatele povolit, aby prováděla změny? ].
+Je pravděpodobné, že Windows bude protestovat ve formě varování před cizím softwarem oknem typu: #quote()[Chcete aplikaci od neznámého vydavatele povolit, aby prováděla změny? ].
 Stačí kliknout na tlačítko `Ano`.
 
 
@@ -17,7 +17,7 @@ Stačí kliknout na tlačítko `Ano`.
   #image("pyinstaller-icon.png", width: 50pt)
 ]
 
-Během instalace se v `Destination Folder` (na ukázce je to `C:\Program Files\MAReK`) vytvoří i `uninstall.exe`, kterým je aplikaci možnost odinstalovat.
+Během instalace se v `Destination Folder` (na ukázce je to `C:\Program Files\MAReK`) vytvoří i `uninstall.exe`, kterým je aplikaci možno odinstalovat.
 
 == Popis aplikace
 
