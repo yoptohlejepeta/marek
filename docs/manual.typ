@@ -1,5 +1,8 @@
 #set text(size: 14pt)
-= #text(font: "VictorMono NF", size: 34pt)[ MAReK ]
+#show heading: set text(font: "Overpass Nerd Font")
+#show heading.where(depth: 1): set text(size: 34pt)
+
+= MAReK
 
 == Instalace pro Windows
 
