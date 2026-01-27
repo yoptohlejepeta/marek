@@ -203,6 +203,12 @@ class Canvas(QWidget):
         if not self.image:
             return
 
+        global_pos = event.globalPosition()
+        mouse_screen = self.mapFromGlobal(
+            QPoint(int(global_pos.x()), int(global_pos.y()))
+        )
+        mouse_image = self.image_coords(mouse_screen)
+
         zoom_factor = 1.1
         if event.angleDelta().y() > 0:
             self.zoom *= zoom_factor
@@ -210,6 +216,10 @@ class Canvas(QWidget):
             self.zoom /= zoom_factor
 
         self.zoom = max(0.1, min(self.zoom, 10.0))
+
+        self.offset.setX(int(mouse_screen.x() - (mouse_image.x() * self.zoom)))
+        self.offset.setY(int(mouse_screen.y() - (mouse_image.y() * self.zoom)))
+
         self.update()
 
     def mousePressEvent(self, event):
