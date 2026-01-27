@@ -1,4 +1,4 @@
-#set text(size: 16pt)
+#set text(size: 14pt)
 = #text(font: "VictorMono NF", size: 34pt)[ MAReK ]
 
 == Instalace pro Windows
@@ -17,7 +17,7 @@ Stačí kliknout na tlačítko `Ano`.
   #image("pyinstaller-icon.png", width: 50pt)
 ]
 
-Během instalace se v `Destination Folder` (na ukázce je to `C:\Program Files\MAReK`) vytvoří i `uninstall.exe`, kterým je aplikaci možnos odinstalovat.
+Během instalace se v `Destination Folder` (na ukázce je to `C:\Program Files\MAReK`) vytvoří i `uninstall.exe`, kterým je aplikaci možnost odinstalovat.
 
 == Popis aplikace
 
@@ -31,9 +31,11 @@ Během instalace se v `Destination Folder` (na ukázce je to `C:\Program Files\M
 
 1. *Import a navigace* (Dolní lišta)
   - ⬅️,➡️-- přepínání mezi snímky
-  - 📁-- otevírání nových snímků
+  - 📁-- otevírání nových snímků (lze vybrat více snímků najednou)
+    - ve výběrníku jsou viditelné pouze `.png` a `.jpg` snímky
+    - pro načtení anotací (`.npy` soubory), musí být ve stejném adresáři jako otevírané obrázky.
   - #text(font: "Adwaita Sans", size: 14pt)[ Image X of Y ] -- ukazuje celkový postup v sadě
-2. *Nástroje* (Pravá lišta)
+2. *Nástroje* (Pravá lišta) - přepínání kliknutím na liště
   - ✋-- _Interakce_: posouvání snímku
   - ✏️-- _Anotace_: kreslení hranic
   - 🧹-- _Mazání_: odstraňování anotací
@@ -42,3 +44,6 @@ Během instalace se v `Destination Folder` (na ukázce je to `C:\Program Files\M
   - zobrazení aktuálního snímku s anotacemi
   - lze přiblížit kolečkem myši
 
+// == Workflow
+// Import snímků (📁) #sym.arrow.r Pohyb po ploše (✋)/přiblížení (kolečko myši) \
+// #sym.arrow.r Anotace (✏️)/mazání (🧹) #sym.arrow.r Uložení úprav (💾)
