@@ -1,40 +1,84 @@
-name: PySide6 deploy app
+name: Build Executables
 
 on:
   push:
-    branches: [main, test/deploy]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-
+  build-linux:
+    runs-on: ubuntu-latest
     steps:
-      - name: Check-out repository
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v6
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version-file: ".python-version"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
 
-      - name: Install the project
-        run: uv sync --locked --all-extras --dev
+      - name: Install dependencies
+        run: uv sync --locked --all-extras
 
-      - name: PySide6 deploy
-        run: uv run pyside6-deploy --config-file pysidedeploy.spec
+      - name: Install PyInstaller
+        run: uv pip install pyinstaller
 
-      - name: Upload Build Artifacts
+      - name: Build with PyInstaller
+        run: uv run pyinstaller --onedir --windowed --name MAReK src/main.py
+
+      - name: Upload Linux Build
         uses: actions/upload-artifact@v4
         with:
-          name: MAReK-${{ matrix.os }}
-          path: build/
+          name: MAReK-Linux
+          path: dist/MAReK/
+          if-no-files-found: error
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras
+
+      - name: Install PyInstaller
+        run: uv pip install pyinstaller
+
+      - name: Build with PyInstaller
+        run: uv run pyinstaller --onedir --windowed --name MAReK src/main.py
+
+      - name: Install NSIS
+        uses: repolevedavaj/install-nsis@v1.1.0
+        with:
+          nsis-version: 3.11
+
+      - name: Create Windows Installer
+        run: makensis installer.nsi
+
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: MAReK-Windows-Installer
+          path: MAReK-Windows-Setup.exe
+          if-no-files-found: error
+
+      - name: Upload Windows Build (portable)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MAReK-Windows-Portable
+          path: dist/MAReK/
           if-no-files-found: error

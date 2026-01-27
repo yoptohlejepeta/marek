@@ -2,7 +2,7 @@
 !define COMPANYNAME "YourName"
 !define DESCRIPTION "PySide6 Scientific App"
 
-!define SOURCE_DIR "dist\main.dist"
+!define SOURCE_DIR "dist\MAReK"
 
 Name "${APPNAME}"
 OutFile "${APPNAME}-Windows-Setup.exe"
@@ -16,7 +16,7 @@ Section "Install"
     SetOutPath "$INSTDIR"
     File /r "${SOURCE_DIR}\*"
     
-    CreateShortcut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\main.exe" "" "$INSTDIR\main.exe" 0
+    CreateShortcut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\MAReK.exe" "" "$INSTDIR\MAReK.exe" 0
     
     WriteUninstaller "$INSTDIR\uninstall.exe"
 SectionEnd
