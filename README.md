@@ -1,4 +1,3 @@
-![logo](./assets/logo.svg) 
 # MAReK
 
 
@@ -6,7 +5,7 @@
 
 Run app:
 ```bash
-uv run python -m src.main
+uv run python src/main.py
 ```
 
 Build:
