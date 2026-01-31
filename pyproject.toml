@@ -17,6 +17,9 @@ dev = [
     "nuitka>=2.8.9",
     "pip>=25.3",
 ]
+docs = [
+    "zensical>=0.0.20",
+]
 lint = [
     "ruff>=0.14.10",
 ]
