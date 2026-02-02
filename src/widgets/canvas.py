@@ -8,6 +8,7 @@ from skimage.measure import find_contours
 from PySide6.QtCore import QPoint, QPointF, Signal
 from PySide6.QtGui import QBrush, QColor, QImage, QPainter, QPainterPath, QPen, Qt
 from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QPalette
 
 CLOSE_THRESHOLD = 15
 MIN_POINT_DISTANCE = 2
@@ -132,7 +133,7 @@ class Canvas(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.fillRect(self.rect(), QColor(40, 40, 40))
+        painter.fillRect(self.rect(), self.palette().color(QPalette.ColorRole.Window))
 
         if not self.image:
             return

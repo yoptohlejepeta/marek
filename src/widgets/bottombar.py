@@ -1,5 +1,6 @@
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QColor, QFont, QPalette
+from pathlib import Path
+from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtGui import QColor, QFont, QIcon, QPalette
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -39,11 +40,18 @@ class BottomBar(QWidget):
         self.counterLabel = QLabel("No images loaded")
         self.counterLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.counterLabel.setMinimumWidth(140)
+        self.counterLabel.setAutoFillBackground(True)
         layout.addWidget(self.counterLabel)
 
         layout.addSpacing(10)
 
-        openButton = QPushButton("📁")
+        # openButton = QPushButton("📁")
+
+        openButton = QPushButton()
+        icon_path = Path("assets/icons/folder-plus-solid-full.svg")
+        openButton.setIcon(QIcon(str(icon_path)))
+        openButton.setIconSize(QSize(40, 40))
+
         openButton.setMinimumWidth(60)
         openButton.setMinimumHeight(45)
         openButton.setMaximumWidth(60)
@@ -67,8 +75,6 @@ class BottomBar(QWidget):
         self.setMinimumHeight(50)
         self.setMaximumHeight(50)
         self.adjustSize()
-
-        self.setAutoFillBackground(True)
 
     def update_counter(self, current: int, total: int):
         """Update the image counter display."""

@@ -1,5 +1,7 @@
-from PySide6.QtCore import Signal
-from PySide6.QtGui import QFont
+from pathlib import Path
+
+from PySide6.QtCore import QSize, QSysInfo, Signal
+from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
@@ -25,9 +27,22 @@ class ToolBar(QWidget):
         toolsLayout.setContentsMargins(3, 3, 3, 3)
         toolsLayout.setSpacing(2)
 
-        self.handButton = QPushButton("✋")
-        self.penButton = QPushButton("✏️")
-        self.eraseButton = QPushButton("🧹")
+        # self.handButton = QPushButton("✋")
+        self.handButton = QPushButton()
+        self.handButton.setIcon(
+            QIcon(str(Path("assets/icons/arrows-up-down-left-right-solid-full.svg")))
+        )
+        self.handButton.setIconSize(QSize(40, 40))
+        # self.penButton = QPushButton("✏️")
+        self.penButton = QPushButton()
+        self.penButton.setIcon(QIcon(str(Path("assets/icons/pen-solid-full.svg"))))
+        self.penButton.setIconSize(QSize(40, 40))
+        # self.eraseButton = QPushButton("🧹")
+        self.eraseButton = QPushButton()
+        self.eraseButton.setIcon(
+            QIcon(str(Path("assets/icons/trash-can-solid-full.svg")))
+        )
+        self.eraseButton.setIconSize(QSize(40, 40))
         self.saveButton = QPushButton("💾")
 
         font = QFont()
