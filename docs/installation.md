@@ -8,7 +8,7 @@ hide:
 
 ## Windows
 
-[Download :fontawesome-brands-windows:](#){ .md-button .md-button--primary}
+[Download :fontawesome-brands-windows:](https://github.com/yoptohlejepeta/marek/releases/latest/download/MAReK-Windows-Setup.exe){ .md-button .md-button--primary}
 
 ## Linux
 

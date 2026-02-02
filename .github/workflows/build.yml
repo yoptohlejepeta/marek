@@ -75,10 +75,3 @@ jobs:
           name: MAReK-Windows-Installer
           path: MAReK-Windows-Setup.exe
           if-no-files-found: error
-
-      - name: Upload Windows Build (portable)
-        uses: actions/upload-artifact@v4
-        with:
-          name: MAReK-Windows-Portable
-          path: dist/MAReK/
-          if-no-files-found: error
