@@ -1,5 +1,7 @@
-from PySide6.QtCore import Signal
-from PySide6.QtGui import QFont
+from pathlib import Path
+
+from PySide6.QtCore import QSize, Signal
+from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
@@ -25,10 +27,24 @@ class ToolBar(QWidget):
         toolsLayout.setContentsMargins(3, 3, 3, 3)
         toolsLayout.setSpacing(2)
 
-        self.handButton = QPushButton("✋")
-        self.penButton = QPushButton("✏️")
-        self.eraseButton = QPushButton("🧹")
-        self.saveButton = QPushButton("💾")
+        # self.handButton = QPushButton("✋")
+        self.handButton = QPushButton()
+        self.handButton.setIcon(
+            QIcon(str(Path("assets/icons/move.png")))
+        )
+        self.handButton.setIconSize(QSize(40, 40))
+        # self.penButton = QPushButton("✏️")
+        self.penButton = QPushButton()
+        self.penButton.setIcon(QIcon(str(Path("assets/icons/marker.png"))))
+        self.penButton.setIconSize(QSize(40, 40))
+        # self.eraseButton = QPushButton("🧹")
+        self.eraseButton = QPushButton()
+        self.eraseButton.setIcon(QIcon(str(Path("assets/icons/clean.png"))))
+        self.eraseButton.setIconSize(QSize(40, 40))
+        # self.saveButton = QPushButton("💾")
+        self.saveButton = QPushButton()
+        self.saveButton.setIcon(QIcon(str(Path("assets/icons/save.png"))))
+        self.saveButton.setIconSize(QSize(40, 40))
 
         font = QFont()
         font.setPointSize(20)

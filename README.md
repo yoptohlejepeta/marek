@@ -20,3 +20,8 @@ uv run pyinstaller --onedir --windowed --name MAReK src/main.py
 ```bash
 makensis installer.nsi
 ```
+
+## Icons
+
+<https://icons8.com/> 
+

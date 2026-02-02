@@ -10,12 +10,16 @@ dependencies = [
     "pyside6>=6.10.1",
     "scikit-image>=0.26.0",
     "scipy>=1.17.0",
+    "zensical>=0.0.20",
 ]
 
 [dependency-groups]
 dev = [
     "nuitka>=2.8.9",
     "pip>=25.3",
+]
+docs = [
+    "zensical>=0.0.20",
 ]
 lint = [
     "ruff>=0.14.10",
