@@ -255,6 +255,7 @@ dependencies = [
     { name = "pyside6" },
     { name = "scikit-image" },
     { name = "scipy" },
+    { name = "zensical" },
 ]
 
 [package.dev-dependencies]
@@ -276,6 +277,7 @@ requires-dist = [
     { name = "pyside6", specifier = ">=6.10.1" },
     { name = "scikit-image", specifier = ">=0.26.0" },
     { name = "scipy", specifier = ">=1.17.0" },
+    { name = "zensical", specifier = ">=0.0.20" },
 ]
 
 [package.metadata.requires-dev]
