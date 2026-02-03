@@ -3,6 +3,8 @@ name: Build Executables
 on:
   push:
     branches: [main]
+    tags:
+      - "*.*.*"
   workflow_dispatch:
 
 jobs:
@@ -86,7 +88,7 @@ jobs:
           path: artifacts
 
       - name: Add files to existing Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             artifacts/MAReK-Linux.zip
