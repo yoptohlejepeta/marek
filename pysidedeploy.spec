@@ -68,7 +68,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --quiet --noinclude-qt-translations --include-package=scipy --include-package=skimage
+extra_args = --quiet --noinclude-qt-translations --include-package=scipy --include-package=skimage --include-data-files=assets=assets
 
 [buildozer]
 
