@@ -1,4 +1,3 @@
-from pathlib import Path
 from PySide6.QtCore import QSize, Qt, Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
@@ -7,6 +6,11 @@ from PySide6.QtWidgets import (
     QPushButton,
     QWidget,
 )
+
+from .utils import get_asset_path
+
+
+
 
 
 class BottomBar(QWidget):
@@ -25,8 +29,7 @@ class BottomBar(QWidget):
 
         # prevButton = QPushButton("⬅️")
         prevButton = QPushButton()
-        icon_path = Path("assets/icons/arrow-left.png")
-        prevButton.setIcon(QIcon(str(icon_path)))
+        prevButton.setIcon(QIcon(str(get_asset_path("icons/arrow-left.png"))))
         prevButton.setIconSize(QSize(40, 40))
 
         prevButton.setMinimumWidth(60)
@@ -48,8 +51,7 @@ class BottomBar(QWidget):
 
         # openButton = QPushButton("📁")
         openButton = QPushButton()
-        icon_path = Path("assets/icons/add-image.png")
-        openButton.setIcon(QIcon(str(icon_path)))
+        openButton.setIcon(QIcon(str(get_asset_path("icons/add-image.png"))))
         openButton.setIconSize(QSize(40, 40))
 
         openButton.setMinimumWidth(60)
@@ -63,8 +65,7 @@ class BottomBar(QWidget):
 
         # nextButton = QPushButton("➡️")
         nextButton = QPushButton()
-        icon_path = Path("assets/icons/arrow-right.png")
-        nextButton.setIcon(QIcon(str(icon_path)))
+        nextButton.setIcon(QIcon(str(get_asset_path("icons/arrow-right.png"))))
         nextButton.setIconSize(QSize(40, 40))
 
         nextButton.setMinimumWidth(60)
