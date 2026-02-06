@@ -16,12 +16,14 @@ dependencies = [
 [dependency-groups]
 dev = [
     "nuitka>=2.8.9",
-    "pip>=25.3",
+    "pyright>=1.1.408",
+    "ruff>=0.14.10",
 ]
 docs = [
     "zensical>=0.0.20",
 ]
 lint = [
+    "pyright>=1.1.408",
     "ruff>=0.14.10",
 ]
 

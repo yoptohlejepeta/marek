@@ -10,7 +10,7 @@ from PySide6.QtGui import QBrush, QColor, QImage, QPainter, QPainterPath, QPen, 
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPalette
 
-CLOSE_THRESHOLD = 15
+CLOSE_THRESHOLD = 30
 MIN_POINT_DISTANCE = 2
 COLORS = [
     QColor(255, 0, 0),
@@ -41,6 +41,9 @@ class Canvas(QWidget):
         self.objects: list[list[QPoint]] = []
         self.pan_start = QPoint(0, 0)
         self.tool: Tool = Tool.HAND
+        # cache for scaled image
+        self.scaled_image_cache = None
+        self.cached_zoom = 1.0
 
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
@@ -50,6 +53,8 @@ class Canvas(QWidget):
         self.image = QImage(file_path)
         self.zoom = 1.0
         self.offset = QPoint(0, 0)
+        self.scaled_image_cache = self.image.copy()
+        self.cached_zoom = self.zoom
 
         if objects is None:
             objects = self._load_objects_from_npy(file_path)
@@ -138,11 +143,22 @@ class Canvas(QWidget):
         if not self.image:
             return
 
-        scaled_image = self.image.scaledToWidth(
-            int(self.image.width() * self.zoom),
-            Qt.TransformationMode.SmoothTransformation,
-        )
-        painter.drawImage(self.offset, scaled_image)
+        if self.cached_zoom != self.zoom:
+            mode = (
+                Qt.TransformationMode.FastTransformation
+                if self.drawing
+                else Qt.TransformationMode.SmoothTransformation
+            )
+            self.scaled_image_cache = self.image.scaledToWidth(
+                int(self.image.width() * self.zoom),
+                mode,
+            )
+            self.cached_zoom = self.zoom
+
+        if not self.scaled_image_cache:
+            return
+
+        painter.drawImage(self.offset.x(), self.offset.y(), self.scaled_image_cache)
 
         for i, obj in enumerate(self.objects):
             base_color = COLORS[i % len(COLORS)]
